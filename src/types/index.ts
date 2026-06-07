@@ -26,14 +26,26 @@ export interface Stat {
   isPositive?: boolean;
 }
 
+export interface Education {
+  degree: string;
+  university: string;
+  duration: string;
+  cgpa: string;
+}
+
+export interface Project {
+  title: string;
+  description: string;
+}
+
 export interface ParsedData {
   name: string;
   email: string;
   phone: string;
   skills: string[];
-  education: string[];
+  education: Education[];
   experience: string[];
-  projects: string[];
+  projects: Project[];
   certifications: string[];
   linkedin: string;
   github: string;
