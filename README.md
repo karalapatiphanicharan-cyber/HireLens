@@ -77,3 +77,34 @@ HireLens follows a decoupled architecture:
 
 ## 📄 License
 MIT License - Copyright (c) 2024 HireLens
+
+---
+
+# 🚢 Production Deployment Guide
+
+## 🔧 Environment Variables
+Create a `.env` file based on `.env.example`:
+- `VITE_API_URL`: The full URL of your deployed FastAPI backend.
+
+## 🚀 Deploy Backend on Render
+1. Create a new **Web Service** on Render.
+2. Connect your GitHub repository.
+3. Use the following settings:
+   - **Environment**: `Python`
+   - **Build Command**: `pip install -r requirements.txt && python -m spacy download en_core_web_sm`
+   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+4. Add Environment Variables:
+   - `PYTHON_VERSION`: `3.9.0`
+   - `ALLOWED_ORIGINS`: Your Vercel frontend URL (e.g., `https://hirelens.vercel.app`).
+
+## 💻 Deploy Frontend on Vercel
+1. Create a new project on Vercel.
+2. Connect your GitHub repository.
+3. Vercel will automatically detect Vite.
+4. Add Environment Variable:
+   - `VITE_API_URL`: Your Render backend URL (e.g., `https://hirelens-api.onrender.com`).
+5. Deploy.
+
+## 🔗 Production URLs
+- **Frontend**: `https://hirelens.vercel.app` (example)
+- **Backend**: `https://hirelens-api.onrender.com` (example)
