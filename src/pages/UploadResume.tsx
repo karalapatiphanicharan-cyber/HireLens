@@ -66,14 +66,19 @@ const UploadResume: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error('File size exceeds 5MB limit. Please upload a smaller PDF or DOCX.');
+      }
+
       const response = await uploadResume(file);
       if (response.success) {
         setParsedData(response.data);
       } else {
-        setError('Failed to parse resume. Please try again.');
+        setError('Unable to parse this file. Please ensure it is a valid, non-corrupt PDF or DOCX.');
       }
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'An error occurred during upload.');
+      const message = err.response?.data?.detail || err.message || 'An unexpected error occurred during upload.';
+      setError(message.includes('file') ? 'Invalid file format. Please upload a PDF or Word document.' : message);
       console.error(err);
     } finally {
       setLoading(false);
@@ -86,13 +91,17 @@ const UploadResume: React.FC = () => {
     setAnalyzing(true);
     setError(null);
     try {
+      if (jobDescription.trim().length < 50) {
+        throw new Error('Please provide a more detailed job description (at least 50 characters) for accurate matching.');
+      }
+
       const result = await analyzeResume({
         resume_data: parsedData,
         job_description: jobDescription
       });
       setAnalysisResult(result);
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'An error occurred during analysis.');
+      setError(err.response?.data?.detail || err.message || 'Analysis failed. Please check your network connection and try again.');
       console.error(err);
     } finally {
       setAnalyzing(false);
