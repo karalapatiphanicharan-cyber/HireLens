@@ -7,6 +7,10 @@ try:
     from .matcher import calculate_job_match
     from .summarizer import generate_summary
     from .intelligence import calculate_strength, get_career_recommendations, generate_roadmap, get_recruiter_insights, get_smart_recommendations
+    from .interviewer import (
+        calculate_readiness, get_technical_questions, get_project_questions,
+        get_hr_behavioral_questions, get_job_specific_questions, get_weak_areas, get_interview_roadmap
+    )
 except ImportError:
     from parser import parse_resume
     from schemas import UploadResponse, ParsedData, AnalysisRequest, AnalysisResponse
@@ -14,6 +18,10 @@ except ImportError:
     from matcher import calculate_job_match
     from summarizer import generate_summary
     from intelligence import calculate_strength, get_career_recommendations, generate_roadmap, get_recruiter_insights, get_smart_recommendations
+    from interviewer import (
+        calculate_readiness, get_technical_questions, get_project_questions,
+        get_hr_behavioral_questions, get_job_specific_questions, get_weak_areas, get_interview_roadmap
+    )
 
 app = FastAPI(title="HireLens API")
 
@@ -72,6 +80,19 @@ async def analyze_resume(request: AnalysisRequest):
         # Merge suggestions
         all_suggestions = ats_result["suggestions"] + match_result["suggestions"]
 
+        hr_behavioral = get_hr_behavioral_questions(resume_dict)
+
+        interview_prep = {
+            "readiness": calculate_readiness(resume_dict, ats_result["ats_score"], match_result["job_match_score"]),
+            "technical_questions": get_technical_questions(request.resume_data.skills),
+            "project_questions": get_project_questions(resume_dict.get("projects", [])),
+            "hr_questions": hr_behavioral["hr"],
+            "behavioral_questions": hr_behavioral["behavioral"],
+            "job_specific_questions": get_job_specific_questions(request.job_description, match_result["missing_skills"]),
+            "weak_areas": get_weak_areas(all_suggestions, match_result["missing_skills"]),
+            "success_roadmap": get_interview_roadmap(match_result["missing_skills"])
+        }
+
         return AnalysisResponse(
             ats_score=ats_result["ats_score"],
             job_match_score=match_result["job_match_score"],
@@ -83,7 +104,8 @@ async def analyze_resume(request: AnalysisRequest):
             recommendations=get_career_recommendations(request.resume_data.skills),
             roadmap=generate_roadmap(request.resume_data.skills),
             insights=get_recruiter_insights(resume_dict),
-            smart_recs=get_smart_recommendations(resume_dict)
+            smart_recs=get_smart_recommendations(resume_dict),
+            interview_prep=interview_prep
         )
     except Exception as e:
         print(f"Error analyzing resume: {str(e)}")

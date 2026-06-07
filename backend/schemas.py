@@ -48,6 +48,25 @@ class RecruiterInsights(BaseModel):
 class CareerRole(BaseModel):
     title: str
 
+class InterviewQuestion(BaseModel):
+    question: str
+    topics: List[str]
+
+class InterviewReadiness(BaseModel):
+    score: int
+    level: str
+    explanation: str
+
+class InterviewPrep(BaseModel):
+    readiness: InterviewReadiness
+    technical_questions: List[InterviewQuestion]
+    project_questions: List[InterviewQuestion]
+    hr_questions: List[InterviewQuestion]
+    behavioral_questions: List[InterviewQuestion]
+    job_specific_questions: List[InterviewQuestion]
+    weak_areas: List[str]
+    success_roadmap: Roadmap
+
 class AnalysisResponse(BaseModel):
     ats_score: int
     job_match_score: int
@@ -61,3 +80,5 @@ class AnalysisResponse(BaseModel):
     roadmap: Optional[Roadmap] = None
     insights: Optional[RecruiterInsights] = None
     smart_recs: Optional[List[str]] = None
+    # Phase 5
+    interview_prep: Optional[InterviewPrep] = None

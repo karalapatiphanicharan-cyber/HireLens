@@ -34,6 +34,32 @@ export interface AnalysisRequest {
   job_description: string;
 }
 
+export interface InterviewQuestion {
+  question: string;
+  topics: string[];
+}
+
+export interface InterviewReadiness {
+  score: number;
+  level: string;
+  explanation: string;
+}
+
+export interface InterviewPrep {
+  readiness: InterviewReadiness;
+  technical_questions: InterviewQuestion[];
+  project_questions: InterviewQuestion[];
+  hr_questions: InterviewQuestion[];
+  behavioral_questions: InterviewQuestion[];
+  job_specific_questions: InterviewQuestion[];
+  weak_areas: string[];
+  success_roadmap: {
+    current: string[];
+    next: string[];
+    future: string[];
+  };
+}
+
 export interface AnalysisResponse {
   ats_score: number;
   job_match_score: number;
@@ -56,6 +82,7 @@ export interface AnalysisResponse {
     weaknesses: string[];
   };
   smart_recs?: string[];
+  interview_prep?: InterviewPrep;
 }
 
 export interface Feature {
