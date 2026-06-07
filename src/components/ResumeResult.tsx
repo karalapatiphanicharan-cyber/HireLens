@@ -15,9 +15,7 @@ import RecruiterInsights from './RecruiterInsights';
 import InterviewReadinessCard from './InterviewReadinessCard';
 import QuestionAccordion from './QuestionAccordion';
 import MockInterview from './MockInterview';
-import WeakAreas from './WeakAreas';
-import SuccessRoadmap from './SuccessRoadmap';
-import { Cpu, Box, HelpCircle, Users, Briefcase as BriefcaseIcon } from 'lucide-react';
+import { Cpu, HelpCircle, Users, Briefcase as BriefcaseIcon, Zap, Target, Lightbulb } from 'lucide-react';
 
 // Using a generic icon for GitHub since "Github" export might be missing or named differently
 const GitHubIcon = ({ size }: { size: number }) => (
@@ -147,12 +145,6 @@ const ResumeResult: React.FC<ResumeResultProps> = ({ data, analysis }) => {
                   accentColor="bg-primary/20 text-primary"
                 />
                 <QuestionAccordion
-                  title="Project Deep Dive"
-                  questions={analysis.interview_prep.project_questions}
-                  icon={<Box size={20} />}
-                  accentColor="bg-secondary/20 text-secondary"
-                />
-                <QuestionAccordion
                   title="HR & Culture"
                   questions={analysis.interview_prep.hr_questions}
                   icon={<Users size={20} />}
@@ -164,28 +156,88 @@ const ResumeResult: React.FC<ResumeResultProps> = ({ data, analysis }) => {
                   icon={<HelpCircle size={20} />}
                   accentColor="bg-emerald-500/20 text-emerald-500"
                 />
+                <QuestionAccordion
+                  title="Situational"
+                  questions={analysis.interview_prep.situational_questions}
+                  icon={<Target size={20} />}
+                  accentColor="bg-purple-500/20 text-purple-500"
+                />
+                <QuestionAccordion
+                  title="Problem Solving"
+                  questions={analysis.interview_prep.problem_solving_questions}
+                  icon={<Zap size={20} />}
+                  accentColor="bg-indigo-500/20 text-indigo-500"
+                />
                 {analysis.interview_prep.job_specific_questions.length > 0 && (
-                  <div className="lg:col-span-2">
-                    <QuestionAccordion
-                      title="Job-Specific Preparation"
-                      questions={analysis.interview_prep.job_specific_questions}
-                      icon={<BriefcaseIcon size={20} />}
-                      accentColor="bg-amber-500/20 text-amber-500"
-                    />
-                  </div>
+                  <QuestionAccordion
+                    title="Job-Specific"
+                    questions={analysis.interview_prep.job_specific_questions}
+                    icon={<BriefcaseIcon size={20} />}
+                    accentColor="bg-amber-500/20 text-amber-500"
+                  />
                 )}
               </div>
 
               <MockInterview questions={[
                 ...analysis.interview_prep.technical_questions,
-                ...analysis.interview_prep.project_questions,
                 ...analysis.interview_prep.hr_questions,
-                ...analysis.interview_prep.behavioral_questions
+                ...analysis.interview_prep.behavioral_questions,
+                ...analysis.interview_prep.situational_questions,
+                ...analysis.interview_prep.problem_solving_questions,
+                ...analysis.interview_prep.job_specific_questions
               ]} />
 
-              <WeakAreas areas={analysis.interview_prep.weak_areas} />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-10 group hover:border-emerald-500/20 transition-all">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                      <Target size={24} />
+                    </div>
+                    <h3 className="text-2xl font-black text-white tracking-tight">Strengths</h3>
+                  </div>
+                  <div className="space-y-4">
+                    {analysis.interview_prep.improvement_areas.strengths.map((s: string, i: number) => (
+                      <div key={i} className="flex items-start gap-4 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 flex-shrink-0" />
+                        <p className="text-white font-bold text-sm leading-tight">{s}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-              <SuccessRoadmap roadmap={analysis.interview_prep.success_roadmap} />
+                <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-10 group hover:border-amber-500/20 transition-all">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-12 h-12 bg-amber-500/20 rounded-2xl flex items-center justify-center text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                      <HelpCircle size={24} />
+                    </div>
+                    <h3 className="text-2xl font-black text-white tracking-tight">Areas to Improve</h3>
+                  </div>
+                  <div className="space-y-4">
+                    {analysis.interview_prep.improvement_areas.weak_areas.map((w: string, i: number) => (
+                      <div key={i} className="flex items-start gap-4 p-4 bg-amber-500/5 rounded-2xl border border-amber-500/10">
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 flex-shrink-0" />
+                        <p className="text-white font-bold text-sm leading-tight">{w}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="lg:col-span-2 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-10 group hover:border-primary/20 transition-all">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary glow-primary">
+                      <Lightbulb size={24} />
+                    </div>
+                    <h3 className="text-2xl font-black text-white tracking-tight">Suggested Learning Topics</h3>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {analysis.interview_prep.improvement_areas.suggested_learning.map((l: string, i: number) => (
+                      <div key={i} className="p-6 bg-white/5 rounded-[2rem] border border-white/10 hover:border-primary/30 transition-all">
+                        <p className="text-white font-black text-sm leading-relaxed">{l}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 

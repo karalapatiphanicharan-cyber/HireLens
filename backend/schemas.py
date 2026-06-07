@@ -51,21 +51,27 @@ class CareerRole(BaseModel):
 class InterviewQuestion(BaseModel):
     question: str
     topics: List[str]
+    follow_ups: Optional[List[str]] = []
 
 class InterviewReadiness(BaseModel):
     score: int
     level: str
     explanation: str
 
+class InterviewImprovement(BaseModel):
+    strengths: List[str]
+    weak_areas: List[str]
+    suggested_learning: List[str]
+
 class InterviewPrep(BaseModel):
     readiness: InterviewReadiness
     technical_questions: List[InterviewQuestion]
-    project_questions: List[InterviewQuestion]
     hr_questions: List[InterviewQuestion]
     behavioral_questions: List[InterviewQuestion]
+    situational_questions: List[InterviewQuestion]
+    problem_solving_questions: List[InterviewQuestion]
     job_specific_questions: List[InterviewQuestion]
-    weak_areas: List[str]
-    success_roadmap: Roadmap
+    improvement_areas: InterviewImprovement
 
 class AnalysisResponse(BaseModel):
     ats_score: int

@@ -37,6 +37,7 @@ export interface AnalysisRequest {
 export interface InterviewQuestion {
   question: string;
   topics: string[];
+  follow_ups?: string[];
 }
 
 export interface InterviewReadiness {
@@ -45,19 +46,21 @@ export interface InterviewReadiness {
   explanation: string;
 }
 
+export interface InterviewImprovement {
+  strengths: string[];
+  weak_areas: string[];
+  suggested_learning: string[];
+}
+
 export interface InterviewPrep {
   readiness: InterviewReadiness;
   technical_questions: InterviewQuestion[];
-  project_questions: InterviewQuestion[];
   hr_questions: InterviewQuestion[];
   behavioral_questions: InterviewQuestion[];
+  situational_questions: InterviewQuestion[];
+  problem_solving_questions: InterviewQuestion[];
   job_specific_questions: InterviewQuestion[];
-  weak_areas: string[];
-  success_roadmap: {
-    current: string[];
-    next: string[];
-    future: string[];
-  };
+  improvement_areas: InterviewImprovement;
 }
 
 export interface AnalysisResponse {
