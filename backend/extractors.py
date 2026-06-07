@@ -92,6 +92,8 @@ def extract_projects(text: str) -> List[Dict[str, str]]:
     current_project = None
 
     PROJECT_STOP_HEADERS = ["Experience Simulations", "Certifications", "Education", "Skills", "Academic", "Experience", "Work", "Employment", "Awards", "Links", "Contact"]
+    INVALID_TITLE_STARTS = ["Built", "Developed", "Implemented", "Enabled", "Improved", "Analyzed", "Delivered", "Integrated", "Detected", "Used", "Created"]
+    INVALID_TITLE_FRAGMENTS = ["Generation (RAG)", "and LLMs", "plans"]
 
     for line in lines:
         line_clean = line.strip()
@@ -107,41 +109,39 @@ def extract_projects(text: str) -> List[Dict[str, str]]:
              break
 
         if in_section:
-            # Enhanced Title Detection
-            # 1. Not a bullet
-            # 2. Relatively short but contains project-like nouns
-            # 3. Usually capitalized
             is_bullet = any(line_clean_norm.startswith(b) for b in ['•', '-', '*', '## •'])
 
-            # Project titles often don't end in periods and are on a single line
+            # Strict Title Detection Rules
+            is_valid_format = any(c in line_clean for c in [":", "-", "—"]) or \
+                             (re.search(r'\(.*\)', line_clean) is not None)
+
+            starts_with_action = any(line_clean.startswith(word) for word in INVALID_TITLE_STARTS)
+            contains_fragment = any(frag in line_clean for frag in INVALID_TITLE_FRAGMENTS)
+
             is_likely_title = not is_bullet and \
-                              len(line_clean) < 70 and \
-                              not line_clean.endswith('.') and \
-                              not re.search(r'\d{4}', line_clean) and \
-                              sum(1 for c in line_clean if c.isupper()) >= 2
+                              is_valid_format and \
+                              not starts_with_action and \
+                              not contains_fragment and \
+                              len(line_clean) < 80 and \
+                              not line_clean.endswith('.')
 
             if is_likely_title:
-                # If we detect a new title, save previous project
                 if current_project:
                     projects.append(current_project)
                 current_project = {"title": line_clean, "description": ""}
             elif current_project:
-                # Add to description
                 current_project["description"] += (line_clean_norm + "\n")
 
     if current_project:
         projects.append(current_project)
 
-    # Final cleanup & filtering of weak titles
     final_projects = []
     for p in projects:
         desc = p["description"].strip()
         title = p["title"].strip()
-        # A valid project must have a description and a title that isn't just a few words of a sentence
-        if desc and len(title.split()) <= 10:
+        if desc and len(title.split()) <= 15:
             final_projects.append({"title": title, "description": desc})
         elif final_projects and desc:
-            # If it was a false title, append it to the previous project's description
             final_projects[-1]["description"] += ("\n" + title + "\n" + desc)
 
     return final_projects if final_projects else [{"title": "Not Detected", "description": "Not Detected"}]
