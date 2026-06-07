@@ -1,110 +1,281 @@
 # HireLens — AI Resume Intelligence Platform
 
-HireLens is a production-quality AI-powered Resume Analyzer, ATS Optimizer, and Job Match Platform designed for modern candidates and recruiters. It transforms static resumes into actionable professional intelligence.
+HireLens is a full-stack AI-powered Resume Analysis Platform that helps candidates evaluate, optimize, and improve their resumes using ATS scoring, job matching, skill-gap analysis, recruiter insights, interview preparation, and downloadable reports.
 
-## 🚀 Key Features
+## Live Demo
 
-- **Resume Parsing**: Instantly extract skills, education, and experience from PDF/DOCX files.
-- **ATS Score Analysis**: Get detailed feedback on how well your resume performs against Applicant Tracking Systems.
-- **Job Match Analysis**: Compare your profile against job descriptions with semantic matching scores.
-- **Skill Gap Detection**: Identify missing competencies required for your target roles.
-- **AI Resume Summary**: Generate professional executive summaries automatically.
-- **Interview Preparation**: Get personalized technical, behavioral, and situational questions based on your background.
-- **PDF Report Export**: Download comprehensive analysis reports for recruiters or personal tracking.
-- **Recruiter Insights**: Executive-level assessment of candidate hiring readiness.
+Frontend:
+https://hire-lens-bice.vercel.app
 
-## 🛠 Tech Stack
+Backend API:
+https://hirelens-api-ex0c.onrender.com
 
-### Frontend
-- **React 19** with **TypeScript**
-- **Vite** for lightning-fast builds
-- **Tailwind CSS v4** for modern styling
-- **Framer Motion** for premium animations
-- **Lucide React** for consistent iconography
-- **jsPDF** for professional report generation
-
-### Backend
-- **FastAPI** (Python)
-- **PyMuPDF** & **python-docx** for robust parsing
-- **spaCy** (Natural Language Processing)
-- **Pydantic** for strict data validation
-
-## 📦 Installation & Local Setup
-
-### Prerequisites
-- Node.js (v18+)
-- Python (3.9+)
-
-### Frontend Setup
-1. Navigate to the project root:
-   ```bash
-   npm install
-   npm run dev
-   ```
-2. The frontend will be available at `http://localhost:5173`.
-
-### Backend Setup
-1. Navigate to the `backend` directory:
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   python -m spacy download en_core_web_sm
-   python main.py
-   ```
-2. The API will be available at `http://localhost:8000`.
-
-## 🏗 Architecture
-
-HireLens follows a decoupled architecture:
-1. **Intelligence Engine (Backend)**: Processes raw documents using NLP to extract entities and calculate alignment scores.
-2. **Interactive UI (Frontend)**: A high-fidelity, "Liquid Glass" inspired dashboard that visualizes data and handles report generation locally.
-
-## 🚢 Deployment
-
-### Frontend (Vercel)
-- The project is configured for one-click deployment on Vercel.
-- Ensure `VITE_API_URL` environment variable points to your deployed backend.
-
-### Backend (Render/Heroku)
-- Use the provided `requirements.txt`.
-- Set `PYTHON_VERSION` to 3.9 or higher.
-
-## 🗺 Roadmap
-- [ ] Multi-resume comparison dashboard
-- [ ] Real-time LinkedIn profile optimization
-- [ ] Integration with major job boards (Indeed, LinkedIn API)
-- [ ] Team collaboration features for recruiters
-
-## 📄 License
-MIT License - Copyright (c) 2024 HireLens
+API Documentation:
+https://hirelens-api-ex0c.onrender.com/docs
 
 ---
 
-# 🚢 Production Deployment Guide
+## Features
 
-## 🔧 Environment Variables
-Create a `.env` file based on `.env.example`:
-- `VITE_API_URL`: The full URL of your deployed FastAPI backend.
+### Resume Parsing
+- Upload PDF and DOCX resumes
+- Extract:
+  - Name
+  - Email
+  - Phone
+  - Skills
+  - Education
+  - Experience
+  - Projects
+  - Certifications
+  - LinkedIn
+  - GitHub
 
-## 🚀 Deploy Backend on Render
-1. Create a new **Web Service** on Render.
-2. Connect your GitHub repository.
-3. Use the following settings:
-   - **Environment**: `Python`
-   - **Build Command**: `pip install -r requirements.txt && python -m spacy download en_core_web_sm`
-   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-4. Add Environment Variables:
-   - `PYTHON_VERSION`: `3.9.0`
-   - `ALLOWED_ORIGINS`: Your Vercel frontend URL (e.g., `https://hirelens.vercel.app`).
+### ATS Resume Analysis
+- Realistic ATS scoring
+- Resume quality evaluation
+- Keyword coverage analysis
+- Missing section detection
+- Recruiter readiness insights
 
-## 💻 Deploy Frontend on Vercel
-1. Create a new project on Vercel.
-2. Connect your GitHub repository.
-3. Vercel will automatically detect Vite.
-4. Add Environment Variable:
-   - `VITE_API_URL`: Your Render backend URL (e.g., `https://hirelens-api.onrender.com`).
-5. Deploy.
+### Job Match Analysis
+- Paste any Job Description
+- Match Score calculation
+- Matching Skills detection
+- Missing Skills identification
+- Improvement recommendations
 
-## 🔗 Production URLs
-- **Frontend**: `https://hirelens.vercel.app` (example)
-- **Backend**: `https://hirelens-api.onrender.com` (example)
+### AI Resume Intelligence
+- AI-generated resume summary
+- Resume strength evaluation
+- Candidate level assessment
+- Career roadmap generation
+- Recruiter insights
+
+### Interview Preparation
+- Technical Interview Questions
+- Behavioral Questions
+- HR Interview Questions
+- Situational Questions
+- Problem Solving Questions
+
+### Smart Recommendations
+- Resume-specific suggestions
+- Skill improvement recommendations
+- Project enhancement guidance
+- Career growth roadmap
+
+### PDF Report Generation
+- Download complete analysis report
+- ATS score summary
+- Job match insights
+- Recommendations
+- Resume intelligence report
+
+---
+
+## Tech Stack
+
+### Frontend
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Framer Motion
+- Axios
+- Lucide React
+
+### Backend
+- FastAPI
+- Python
+- Uvicorn
+- PyPDF2
+- PDFPlumber
+- Python-docx
+
+### Deployment
+- Frontend: Vercel
+- Backend: Render
+- Source Control: GitHub
+
+---
+
+## Project Architecture
+
+```text
+Frontend (React + Vite)
+        |
+        |
+        v
+Backend (FastAPI)
+        |
+        |
+        v
+Resume Parser
+        |
+        |
+        +------ ATS Engine
+        |
+        +------ Job Matching Engine
+        |
+        +------ Resume Intelligence Engine
+        |
+        +------ Interview Generator
+        |
+        +------ PDF Report Generator
+```
+
+---
+
+## Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/karalapatiphanicharan-cyber/HireLens.git
+cd HireLens
+```
+
+### Frontend Setup
+
+```bash
+npm install
+npm run dev
+```
+
+Frontend runs at:
+
+```text
+http://localhost:5173
+```
+
+### Backend Setup
+
+```bash
+cd backend
+
+python -m venv venv
+
+venv\Scripts\activate
+
+pip install -r requirements.txt
+
+uvicorn main:app --reload
+```
+
+Backend runs at:
+
+```text
+http://127.0.0.1:8000
+```
+
+Swagger Docs:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## Environment Variables
+
+Create:
+
+```text
+.env
+```
+
+Frontend:
+
+```env
+VITE_API_URL=http://localhost:8000
+```
+
+Production:
+
+```env
+VITE_API_URL=https://hirelens-api-ex0c.onrender.com
+```
+
+---
+
+## API Endpoints
+
+### Health Check
+
+```http
+GET /health
+```
+
+### Upload Resume
+
+```http
+POST /api/upload-resume
+```
+
+### API Information
+
+```http
+GET /
+```
+
+### Swagger Documentation
+
+```http
+GET /docs
+```
+
+---
+
+## Screenshots
+
+### Landing Page
+- Premium dark theme
+- Liquid glass inspired UI
+- Responsive design
+
+### Resume Analysis
+- ATS Score
+- Job Match Score
+- Skills Intelligence
+- Recruiter Insights
+
+### Interview Preparation
+- Technical Questions
+- Behavioral Questions
+- HR Questions
+
+---
+
+## Future Improvements
+
+- OpenAI Integration
+- Gemini Integration
+- Resume Rewrite Suggestions
+- Cover Letter Generator
+- Multi Resume Comparison
+- Recruiter Dashboard
+- Authentication System
+- Resume Version Tracking
+
+---
+
+## Author
+
+K. Sri Phani Charan
+
+GitHub:
+https://github.com/karalapatiphanicharan-cyber
+
+LinkedIn:
+https://linkedin.com/in/phani-charan
+
+---
+
+## License
+
+MIT License
+
+---
+
+⭐ If you found this project useful, consider giving it a star.
