@@ -1,0 +1,15 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="favicon_grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+  <!-- Resume Document Shape -->
+  <path d="M6 4C6 2.89543 6.89543 2 8 2H20L26 8V28C26 29.1046 25.1046 30 24 30H8C6.89543 30 6 29.1046 6 28V4Z" fill="url(#favicon_grad)" fill-opacity="0.1" stroke="url(#favicon_grad)" stroke-width="2"/>
+  <!-- Magnifying Glass -->
+  <circle cx="16" cy="14" r="5" stroke="url(#favicon_grad)" stroke-width="2"/>
+  <line x1="19.5" y1="17.5" x2="23" y2="21" stroke="url(#favicon_grad)" stroke-width="2" stroke-linecap="round"/>
+  <!-- Checkmark -->
+  <path d="M12 23L15 26L21 20" stroke="url(#favicon_grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
