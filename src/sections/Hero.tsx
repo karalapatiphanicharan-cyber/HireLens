@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Upload, Play, BarChart3, Target, Users, Sparkles, Zap } from 'lucide-react';
 import DashboardCard from '../components/DashboardCard';
 
@@ -60,10 +61,12 @@ const Hero: React.FC = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start">
-                <button className="bg-primary text-white px-10 py-5 rounded-[1.5rem] font-black text-xl flex items-center gap-3 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/40 hover:scale-105 active:scale-95 glow-primary group">
-                  <Upload size={24} className="group-hover:rotate-12 transition-transform" />
-                  Upload Resume
-                </button>
+                <Link to="/upload">
+                  <button className="bg-primary text-white px-10 py-5 rounded-[1.5rem] font-black text-xl flex items-center gap-3 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/40 hover:scale-105 active:scale-95 glow-primary group">
+                    <Upload size={24} className="group-hover:rotate-12 transition-transform" />
+                    Upload Resume
+                  </button>
+                </Link>
                 <button className="bg-white/5 text-white border border-white/10 px-10 py-5 rounded-[1.5rem] font-black text-xl flex items-center gap-3 hover:bg-white/10 transition-all hover:scale-105 active:scale-95 backdrop-blur-xl">
                   <Play size={24} fill="currentColor" />
                   Try Demo

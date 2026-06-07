@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Logo from './Logo';
 
 const Navbar: React.FC = () => {
@@ -16,19 +17,19 @@ const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Features', href: '#features' },
-    { name: 'How It Works', href: '#how-it-works' },
-    { name: 'Dashboard', href: '#dashboard' },
-    { name: 'Testimonials', href: '#testimonials' },
+    { name: 'Features', href: '/#features' },
+    { name: 'How It Works', href: '/#how-it-works' },
+    { name: 'Dashboard', href: '/#dashboard' },
+    { name: 'Testimonials', href: '/#testimonials' },
   ];
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'py-4' : 'py-8'}`}>
       <div className="container mx-auto px-6">
         <div className={`liquid-glass rounded-[2rem] px-8 py-4 flex items-center justify-between transition-all duration-500 ${scrolled ? 'bg-[#0F172A]/80 shadow-2xl border-white/10' : 'bg-transparent border-transparent'}`}>
-          <a href="/" className="hover:scale-105 transition-transform">
+          <Link to="/" className="hover:scale-105 transition-transform">
             <Logo />
-          </a>
+          </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-10">
@@ -42,9 +43,11 @@ const Navbar: React.FC = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
               </a>
             ))}
-            <button className="bg-primary text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 glow-primary">
-              Upload Resume
-            </button>
+            <Link to="/upload">
+              <button className="bg-primary text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 glow-primary">
+                Upload Resume
+              </button>
+            </Link>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -75,9 +78,11 @@ const Navbar: React.FC = () => {
                 </a>
               ))}
               <hr className="border-white/5" />
-              <button className="bg-primary text-white w-full py-4 rounded-2xl font-bold text-lg shadow-xl shadow-primary/20">
-                Upload Resume
-              </button>
+              <Link to="/upload" onClick={() => setIsOpen(false)}>
+                <button className="bg-primary text-white w-full py-4 rounded-2xl font-bold text-lg shadow-xl shadow-primary/20">
+                  Upload Resume
+                </button>
+              </Link>
             </div>
           </motion.div>
         )}
