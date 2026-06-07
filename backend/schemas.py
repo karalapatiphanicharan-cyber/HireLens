@@ -27,3 +27,14 @@ class ParsedData(BaseModel):
 class UploadResponse(BaseModel):
     success: bool
     data: ParsedData
+
+class AnalysisRequest(BaseModel):
+    resume_data: ParsedData
+    job_description: str
+
+class AnalysisResponse(BaseModel):
+    ats_score: int
+    job_match_score: int
+    matching_skills: List[str]
+    missing_skills: List[str]
+    suggestions: List[str]
