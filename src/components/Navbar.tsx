@@ -17,11 +17,21 @@ const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Features', href: '/#features' },
-    { name: 'How It Works', href: '/#how-it-works' },
-    { name: 'Dashboard', href: '/#dashboard' },
-    { name: 'Testimonials', href: '/#testimonials' },
+    { name: 'Features', id: 'features' },
+    { name: 'How It Works', id: 'how-it-works' },
+    { name: 'Dashboard', id: 'dashboard' },
+    { name: 'Testimonials', id: 'testimonials' },
   ];
+
+  const scrollToSection = (id: string) => {
+    setIsOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.href = `/#${id}`;
+    }
+  };
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'py-4' : 'py-8'}`}>
@@ -34,14 +44,14 @@ const Navbar: React.FC = () => {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-10">
             {navLinks.map((link) => (
-              <a
+              <button
                 key={link.name}
-                href={link.href}
-                className="text-sm font-semibold text-muted hover:text-white transition-colors relative group"
+                onClick={() => scrollToSection(link.id)}
+                className="text-sm font-semibold text-muted hover:text-white transition-colors relative group cursor-pointer"
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-              </a>
+              </button>
             ))}
             <Link to="/upload">
               <button className="bg-primary text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 glow-primary">
@@ -68,14 +78,13 @@ const Navbar: React.FC = () => {
           >
             <div className="liquid-glass rounded-3xl p-8 flex flex-col gap-6 shadow-2xl border-white/10 bg-[#0F172A]">
               {navLinks.map((link) => (
-                <a
+                <button
                   key={link.name}
-                  href={link.href}
-                  className="text-xl font-bold text-white hover:text-primary transition-colors"
-                  onClick={() => setIsOpen(false)}
+                  className="text-xl font-bold text-white hover:text-primary transition-colors text-left cursor-pointer"
+                  onClick={() => scrollToSection(link.id)}
                 >
                   {link.name}
-                </a>
+                </button>
               ))}
               <hr className="border-white/5" />
               <Link to="/upload" onClick={() => setIsOpen(false)}>

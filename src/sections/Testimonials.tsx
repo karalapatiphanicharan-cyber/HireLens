@@ -5,7 +5,7 @@ import TestimonialCard from '../components/TestimonialCard';
 
 const Testimonials: React.FC = () => {
   return (
-    <section id="testimonials" className="py-32 bg-[#030712] relative">
+    <section id="testimonials" className="py-32 bg-[#030712] relative overflow-hidden">
        {/* Background Glow */}
        <div className="absolute top-1/2 left-0 w-full h-1/2 bg-secondary/5 blur-[150px] -z-10" />
 
