@@ -7,6 +7,11 @@ import ATSScoreCard from './ATSScoreCard';
 import JobMatchCard from './JobMatchCard';
 import SkillMatchCard from './SkillMatchCard';
 import SuggestionCard from './SuggestionCard';
+import ResumeSummaryCard from './ResumeSummaryCard';
+import ResumeStrengthCard from './ResumeStrengthCard';
+import CareerRecommendations from './CareerRecommendations';
+import LearningRoadmap from './LearningRoadmap';
+import RecruiterInsights from './RecruiterInsights';
 
 // Using a generic icon for GitHub since "Github" export might be missing or named differently
 const GitHubIcon = ({ size }: { size: number }) => (
@@ -75,6 +80,47 @@ const ResumeResult: React.FC<ResumeResultProps> = ({ data, analysis }) => {
           />
 
           <SuggestionCard suggestions={analysis.suggestions} />
+
+          {/* Phase 4 AI Features */}
+          {analysis.summary && <ResumeSummaryCard summary={analysis.summary} />}
+
+          {analysis.strength && (
+            <ResumeStrengthCard
+              score={analysis.strength.score}
+              level={analysis.strength.level}
+            />
+          )}
+
+          {analysis.recommendations && (
+            <CareerRecommendations roles={analysis.recommendations} />
+          )}
+
+          {analysis.roadmap && (
+            <LearningRoadmap roadmap={analysis.roadmap} />
+          )}
+
+          {analysis.insights && (
+            <RecruiterInsights insights={analysis.insights} />
+          )}
+
+          {analysis.smart_recs && analysis.smart_recs.length > 0 && (
+            <div className="mt-8 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-10 group hover:border-primary/20 transition-all">
+               <div className="flex items-center gap-4 mb-10">
+                <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary glow-primary">
+                  <Award size={24} />
+                </div>
+                <h3 className="text-2xl font-black text-white tracking-tight">Smart Recommendations</h3>
+              </div>
+              <div className="space-y-4">
+                {analysis.smart_recs.map((rec, i) => (
+                  <div key={i} className="bg-[#030712]/40 border border-white/5 p-6 rounded-2xl flex items-center gap-4 hover:bg-primary/5 transition-all">
+                    <div className="w-2 h-2 rounded-full bg-primary" />
+                    <p className="text-white font-bold">{rec}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="mt-20 flex items-center gap-4 mb-10">
             <div className="h-[1px] flex-1 bg-white/10" />

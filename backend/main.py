@@ -5,11 +5,15 @@ try:
     from .schemas import UploadResponse, ParsedData, AnalysisRequest, AnalysisResponse
     from .ats import calculate_ats_score
     from .matcher import calculate_job_match
+    from .summarizer import generate_summary
+    from .intelligence import calculate_strength, get_career_recommendations, generate_roadmap, get_recruiter_insights, get_smart_recommendations
 except ImportError:
     from parser import parse_resume
     from schemas import UploadResponse, ParsedData, AnalysisRequest, AnalysisResponse
     from ats import calculate_ats_score
     from matcher import calculate_job_match
+    from summarizer import generate_summary
+    from intelligence import calculate_strength, get_career_recommendations, generate_roadmap, get_recruiter_insights, get_smart_recommendations
 
 app = FastAPI(title="HireLens API")
 
@@ -59,7 +63,13 @@ async def analyze_resume(request: AnalysisRequest):
             job_match_score=match_result["job_match_score"],
             matching_skills=match_result["matching_skills"],
             missing_skills=match_result["missing_skills"],
-            suggestions=all_suggestions
+            suggestions=all_suggestions,
+            summary=generate_summary(resume_dict),
+            strength=calculate_strength(resume_dict),
+            recommendations=get_career_recommendations(request.resume_data.skills),
+            roadmap=generate_roadmap(request.resume_data.skills),
+            insights=get_recruiter_insights(resume_dict),
+            smart_recs=get_smart_recommendations(resume_dict)
         )
     except Exception as e:
         print(f"Error analyzing resume: {str(e)}")
