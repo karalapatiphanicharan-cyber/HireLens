@@ -47,7 +47,7 @@ const steps = [
 
 const HowItWorks: React.FC = () => {
   return (
-    <section id="how-it-works" className="py-32 bg-[#030712]">
+    <section id="how-it-works" className="py-32 bg-[#030712] relative">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-4xl mx-auto mb-32">
           <motion.div

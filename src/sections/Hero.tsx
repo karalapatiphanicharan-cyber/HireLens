@@ -62,15 +62,17 @@ const Hero: React.FC = () => {
 
               <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start">
                 <Link to="/upload">
-                  <button className="bg-primary text-white px-10 py-5 rounded-[1.5rem] font-black text-xl flex items-center gap-3 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/40 hover:scale-105 active:scale-95 glow-primary group">
+                  <button className="bg-primary text-white px-10 py-5 rounded-[1.5rem] font-black text-xl flex items-center gap-3 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/40 hover:scale-105 active:scale-95 glow-primary group cursor-pointer">
                     <Upload size={24} className="group-hover:rotate-12 transition-transform" />
                     Upload Resume
                   </button>
                 </Link>
-                <button className="bg-white/5 text-white border border-white/10 px-10 py-5 rounded-[1.5rem] font-black text-xl flex items-center gap-3 hover:bg-white/10 transition-all hover:scale-105 active:scale-95 backdrop-blur-xl">
-                  <Play size={24} fill="currentColor" />
-                  Try Demo
-                </button>
+                <Link to="/upload?demo=true">
+                  <button className="bg-white/5 text-white border border-white/10 px-10 py-5 rounded-[1.5rem] font-black text-xl flex items-center gap-3 hover:bg-white/10 transition-all hover:scale-105 active:scale-95 backdrop-blur-xl cursor-pointer">
+                    <Play size={24} fill="currentColor" />
+                    Try Demo
+                  </button>
+                </Link>
               </div>
             </motion.div>
 
