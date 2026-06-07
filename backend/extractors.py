@@ -91,6 +91,8 @@ def extract_projects(text: str) -> List[Dict[str, str]]:
     in_section = False
     current_project = None
 
+    PROJECT_STOP_HEADERS = ["Experience Simulations", "Certifications", "Education", "Skills", "Academic", "Experience", "Work", "Employment", "Awards", "Links", "Contact"]
+
     for line in lines:
         line_clean = line.strip()
         if not line_clean: continue
@@ -101,26 +103,48 @@ def extract_projects(text: str) -> List[Dict[str, str]]:
             in_section = True
             continue
 
-        if in_section and any(line_clean.lower() == h.lower() or line_clean.lower().startswith(h.lower()) for h in MAJOR_HEADERS if h.lower() not in ["projects", "personal projects"]):
+        if in_section and any(line_clean.lower() == h.lower() or line_clean.lower().startswith(h.lower()) for h in PROJECT_STOP_HEADERS):
              break
 
         if in_section:
+            # Enhanced Title Detection
+            # 1. Not a bullet
+            # 2. Relatively short but contains project-like nouns
+            # 3. Usually capitalized
             is_bullet = any(line_clean_norm.startswith(b) for b in ['•', '-', '*', '## •'])
 
-            if not is_bullet and len(line_clean) < 60 and not line_clean.endswith('.') and not re.search(r'\d{4}', line_clean):
+            # Project titles often don't end in periods and are on a single line
+            is_likely_title = not is_bullet and \
+                              len(line_clean) < 70 and \
+                              not line_clean.endswith('.') and \
+                              not re.search(r'\d{4}', line_clean) and \
+                              sum(1 for c in line_clean if c.isupper()) >= 2
+
+            if is_likely_title:
+                # If we detect a new title, save previous project
                 if current_project:
                     projects.append(current_project)
                 current_project = {"title": line_clean, "description": ""}
             elif current_project:
+                # Add to description
                 current_project["description"] += (line_clean_norm + "\n")
 
     if current_project:
         projects.append(current_project)
 
+    # Final cleanup & filtering of weak titles
+    final_projects = []
     for p in projects:
-        p["description"] = p["description"].strip()
+        desc = p["description"].strip()
+        title = p["title"].strip()
+        # A valid project must have a description and a title that isn't just a few words of a sentence
+        if desc and len(title.split()) <= 10:
+            final_projects.append({"title": title, "description": desc})
+        elif final_projects and desc:
+            # If it was a false title, append it to the previous project's description
+            final_projects[-1]["description"] += ("\n" + title + "\n" + desc)
 
-    return projects if projects else [{"title": "Not Detected", "description": "Not Detected"}]
+    return final_projects if final_projects else [{"title": "Not Detected", "description": "Not Detected"}]
 
 def extract_education(text: str) -> List[Dict[str, str]]:
     lines = text.split('\n')

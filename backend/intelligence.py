@@ -68,31 +68,36 @@ def get_career_recommendations(skills: List[str]) -> List[Dict[str, str]]:
 def generate_roadmap(skills: List[str]) -> Dict[str, List[str]]:
     skills_lower = [s.lower() for s in skills]
 
-    # Heuristic based on common stacks
     next_skills = []
     future_skills = []
 
-    if "python" in skills_lower and "fastapi" not in skills_lower:
-        next_skills.append("FastAPI")
+    # AI/ML Specific Roadmap Logic
+    if "machine learning" in skills_lower or "python" in skills_lower:
+        if "fastapi" not in skills_lower: next_skills.append("FastAPI")
+        if "docker" not in skills_lower: next_skills.append("Docker")
+        if "aws" not in skills_lower: next_skills.append("AWS")
+
+        future_skills.extend(["TensorFlow", "PyTorch", "MLOps", "LLM Engineering"])
+
+    # General Web Logic
     if "react" in skills_lower and "typescript" not in skills_lower:
         next_skills.append("TypeScript")
-    if ("python" in skills_lower or "javascript" in skills_lower) and "docker" not in skills_lower:
-        next_skills.append("Docker")
+
     if "docker" in skills_lower and "kubernetes" not in skills_lower:
         future_skills.append("Kubernetes")
-    if "machine learning" in skills_lower:
-        next_skills.append("PyTorch")
-        future_skills.append("MLOps")
-        future_skills.append("LLM Engineering")
 
-    # Defaults
-    if not next_skills: next_skills = ["System Design", "Cloud Basics"]
-    if not future_skills: future_skills = ["AWS Certified Architect", "Microservices"]
+    # Deduplicate and clean
+    next_skills = [s for s in next_skills if s.lower() not in skills_lower]
+    future_skills = [s for s in future_skills if s.lower() not in skills_lower and s not in next_skills]
+
+    # Defaults if empty
+    if not next_skills: next_skills = ["System Design", "GraphQL", "Redis"]
+    if not future_skills: future_skills = ["Cloud Native Architecture", "Advanced System Design"]
 
     return {
         "current": skills[:5],
-        "next": next_skills[:3],
-        "future": future_skills[:3]
+        "next": next_skills[:4],
+        "future": future_skills[:4]
     }
 
 def get_recruiter_insights(data: Dict[str, Any]) -> Dict[str, List[str]]:
@@ -118,14 +123,38 @@ def get_smart_recommendations(data: Dict[str, Any]) -> List[str]:
     recs = []
     skills_lower = [s.lower() for s in data.get("skills", [])]
     projects = [p for p in data.get("projects", []) if p.get("title") != "Not Detected"]
+    all_text = str(data).lower()
 
+    # 1. Project Deployment
     if projects:
-        recs.append("Add live deployment links to your top projects.")
-    if "docker" not in skills_lower:
-        recs.append("Learn Docker to containerize your applications for production.")
-    if "aws" not in skills_lower and "azure" not in skills_lower:
-        recs.append("Gain foundational knowledge in Cloud (AWS/Azure).")
-    if len(projects) < 3:
-        recs.append("Build a full-stack AI application to showcase end-to-end skills.")
+        top_project = projects[0].get("title")
+        recs.append(f"Deploy {top_project} using FastAPI and Render/Vercel for public access.")
 
-    return recs[:4]
+    # 2. Containerization
+    if "docker" not in skills_lower:
+        recs.append("Containerize your primary AI projects using Docker to ensure environment consistency.")
+
+    # 3. Cloud Certification
+    if "aws" not in skills_lower:
+        recs.append("Earn the AWS Cloud Practitioner certification to validate your cloud expertise.")
+
+    # 4. Deployment Links
+    if "http" not in all_text:
+        recs.append("Add live deployment links to your project section to prove functionality.")
+
+    # 5. Full-stack AI
+    if len(projects) < 3:
+        recs.append("Build one end-to-end full-stack AI application with a modern React frontend.")
+
+    # 6. CI/CD
+    if "github" in skills_lower and "ci/cd" not in all_text:
+        recs.append("Implement GitHub Actions CI/CD pipelines for your project repositories.")
+
+    # 7. Live Demos
+    recs.append("Create video demos or live walkthroughs for your complex AI/ML projects.")
+
+    # 8. Advanced Skills
+    if "machine learning" in skills_lower and "pytorch" not in skills_lower:
+        recs.append("Learn PyTorch or TensorFlow for deep learning model development.")
+
+    return recs[:8]

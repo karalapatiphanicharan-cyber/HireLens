@@ -26,6 +26,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {
+        "name": "HireLens API",
+        "version": "1.0.0",
+        "status": "running",
+        "message": "HireLens AI Resume Analyzer API is running successfully",
+        "docs": "/docs"
+    }
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
+
 @app.post("/api/upload-resume", response_model=UploadResponse)
 async def upload_resume(file: UploadFile = File(...)):
     if not file.filename.endswith((".pdf", ".docx")):
