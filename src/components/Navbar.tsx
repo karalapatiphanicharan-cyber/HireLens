@@ -1,20 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, FileBarChart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
+import { getLastReport, generatePDFReport } from '../services/report';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [lastReport, setLastReport] = useState<any>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
+    setLastReport(getLastReport());
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleDownloadLast = async () => {
+    const report = getLastReport();
+    if (report) {
+      setIsDownloading(true);
+      try {
+        await generatePDFReport(report.data, report.analysis);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsDownloading(false);
+      }
+    }
+  };
 
   const navLinks = [
     { name: 'Features', id: 'features' },
@@ -43,6 +61,16 @@ const Navbar: React.FC = () => {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-10">
+            {lastReport && (
+              <button
+                onClick={handleDownloadLast}
+                disabled={isDownloading}
+                className="text-xs font-black text-accent hover:text-accent/80 transition-colors flex items-center gap-2 border border-accent/20 px-4 py-2 rounded-full bg-accent/5 hover:bg-accent/10 cursor-pointer"
+              >
+                {isDownloading ? <div className="w-3 h-3 border border-accent/30 border-t-accent rounded-full animate-spin" /> : <FileBarChart size={14} />}
+                Last Report
+              </button>
+            )}
             {navLinks.map((link) => (
               <button
                 key={link.name}
@@ -87,6 +115,16 @@ const Navbar: React.FC = () => {
                 </button>
               ))}
               <hr className="border-white/5" />
+              {lastReport && (
+                <button
+                  onClick={handleDownloadLast}
+                  disabled={isDownloading}
+                  className="w-full py-4 rounded-2xl font-bold text-lg border border-accent/20 text-accent flex items-center justify-center gap-2"
+                >
+                  <FileBarChart size={20} />
+                  {isDownloading ? 'Downloading...' : 'Download Last Report'}
+                </button>
+              )}
               <Link to="/upload" onClick={() => setIsOpen(false)}>
                 <button className="bg-primary text-white w-full py-4 rounded-2xl font-bold text-lg shadow-xl shadow-primary/20">
                   Upload Resume

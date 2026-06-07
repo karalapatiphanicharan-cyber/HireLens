@@ -86,6 +86,13 @@ export interface AnalysisResponse {
   };
   smart_recs?: string[];
   interview_prep?: InterviewPrep;
+  recruiter_report?: {
+    assessment: string;
+    strengths: string[];
+    concerns: string[];
+    recommended_roles: string[];
+    hiring_readiness: string;
+  };
 }
 
 export interface Feature {

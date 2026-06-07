@@ -11,6 +11,7 @@ try:
         calculate_readiness, get_technical_questions, get_behavioral_questions,
         get_hr_questions, get_situational_problem_solving, get_job_specific_questions, get_improvement_areas
     )
+    from .report_generator import get_recruiter_report
 except ImportError:
     from parser import parse_resume
     from schemas import UploadResponse, ParsedData, AnalysisRequest, AnalysisResponse
@@ -22,6 +23,7 @@ except ImportError:
         calculate_readiness, get_technical_questions, get_behavioral_questions,
         get_hr_questions, get_situational_problem_solving, get_job_specific_questions, get_improvement_areas
     )
+    from report_generator import get_recruiter_report
 
 app = FastAPI(title="HireLens API")
 
@@ -105,7 +107,8 @@ async def analyze_resume(request: AnalysisRequest):
             roadmap=generate_roadmap(request.resume_data.skills),
             insights=get_recruiter_insights(resume_dict),
             smart_recs=get_smart_recommendations(resume_dict),
-            interview_prep=interview_prep
+            interview_prep=interview_prep,
+            recruiter_report=get_recruiter_report(resume_dict, ats_result["ats_score"], match_result["job_match_score"], match_result["missing_skills"])
         )
     except Exception as e:
         print(f"Error analyzing resume: {str(e)}")
