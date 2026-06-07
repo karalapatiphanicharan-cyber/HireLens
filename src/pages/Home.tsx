@@ -19,7 +19,7 @@ const Home: React.FC = () => {
         <Testimonials />
 
         {/* Final CTA Section */}
-        <section className="py-24 bg-white">
+        <section className="py-24 bg-[#030712]">
           <div className="container mx-auto px-6 text-center">
             <div className="liquid-glass p-12 lg:p-20 rounded-[3rem] bg-gradient-to-br from-primary via-secondary to-accent relative overflow-hidden">
               {/* Decorative particles */}
