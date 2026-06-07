@@ -12,6 +12,12 @@ import ResumeStrengthCard from './ResumeStrengthCard';
 import CareerRecommendations from './CareerRecommendations';
 import LearningRoadmap from './LearningRoadmap';
 import RecruiterInsights from './RecruiterInsights';
+import InterviewReadinessCard from './InterviewReadinessCard';
+import QuestionAccordion from './QuestionAccordion';
+import MockInterview from './MockInterview';
+import WeakAreas from './WeakAreas';
+import SuccessRoadmap from './SuccessRoadmap';
+import { Cpu, Box, HelpCircle, Users, Briefcase as BriefcaseIcon } from 'lucide-react';
 
 // Using a generic icon for GitHub since "Github" export might be missing or named differently
 const GitHubIcon = ({ size }: { size: number }) => (
@@ -119,6 +125,67 @@ const ResumeResult: React.FC<ResumeResultProps> = ({ data, analysis }) => {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Phase 5 Interview Preparation Module */}
+          {analysis.interview_prep && (
+            <div className="mt-20">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="h-[1px] flex-1 bg-white/10" />
+                <span className="text-primary font-black uppercase tracking-[0.3em] text-xs">AI Interview Preparation</span>
+                <div className="h-[1px] flex-1 bg-white/10" />
+              </div>
+
+              <InterviewReadinessCard readiness={analysis.interview_prep.readiness} />
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                <QuestionAccordion
+                  title="Technical Core"
+                  questions={analysis.interview_prep.technical_questions}
+                  icon={<Cpu size={20} />}
+                  accentColor="bg-primary/20 text-primary"
+                />
+                <QuestionAccordion
+                  title="Project Deep Dive"
+                  questions={analysis.interview_prep.project_questions}
+                  icon={<Box size={20} />}
+                  accentColor="bg-secondary/20 text-secondary"
+                />
+                <QuestionAccordion
+                  title="HR & Culture"
+                  questions={analysis.interview_prep.hr_questions}
+                  icon={<Users size={20} />}
+                  accentColor="bg-accent/20 text-accent"
+                />
+                <QuestionAccordion
+                  title="Behavioral"
+                  questions={analysis.interview_prep.behavioral_questions}
+                  icon={<HelpCircle size={20} />}
+                  accentColor="bg-emerald-500/20 text-emerald-500"
+                />
+                {analysis.interview_prep.job_specific_questions.length > 0 && (
+                  <div className="lg:col-span-2">
+                    <QuestionAccordion
+                      title="Job-Specific Preparation"
+                      questions={analysis.interview_prep.job_specific_questions}
+                      icon={<BriefcaseIcon size={20} />}
+                      accentColor="bg-amber-500/20 text-amber-500"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <MockInterview questions={[
+                ...analysis.interview_prep.technical_questions,
+                ...analysis.interview_prep.project_questions,
+                ...analysis.interview_prep.hr_questions,
+                ...analysis.interview_prep.behavioral_questions
+              ]} />
+
+              <WeakAreas areas={analysis.interview_prep.weak_areas} />
+
+              <SuccessRoadmap roadmap={analysis.interview_prep.success_roadmap} />
             </div>
           )}
 
