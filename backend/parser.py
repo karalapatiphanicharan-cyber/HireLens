@@ -34,16 +34,19 @@ def parse_resume(file_bytes: bytes, filename: str) -> dict:
         raise ValueError("Unsupported file format")
 
     links = extract_links(text)
+    name = extract_name(text)
+    projects = extract_projects(text)
+    project_titles = [p.get("title") for p in projects if p.get("title") != "Not Detected"]
 
     return {
-        "name": extract_name(text),
+        "name": name,
         "email": extract_email(text),
         "phone": extract_phone(text),
         "skills": extract_skills(text),
         "education": extract_education(text),
         "experience": extract_experience(text),
-        "projects": extract_projects(text),
-        "certifications": extract_certifications(text),
+        "projects": projects,
+        "certifications": extract_certifications(text, candidate_name=name, project_titles=project_titles),
         "linkedin": links["linkedin"],
         "github": links["github"],
         "portfolio": links["portfolio"]

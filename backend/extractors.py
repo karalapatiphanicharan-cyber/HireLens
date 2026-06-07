@@ -183,26 +183,99 @@ def extract_education(text: str) -> List[Dict[str, str]]:
 
     return final_edu if final_edu else [{"degree": "Not Detected", "university": "Not Detected", "duration": "Not Detected", "cgpa": "Not Detected"}]
 
-def extract_certifications(text: str) -> List[str]:
+def is_person_name(text: str, candidate_name: str = "") -> bool:
+    """Check if a string looks like a person's name."""
+    if not text: return False
+
+    # Check against candidate name
+    if candidate_name and (candidate_name.lower() in text.lower() or text.lower() in candidate_name.lower()):
+        if len(text.split()) >= 2: # Avoid matching single names if they are keywords
+             return True
+
+    # Check using spaCy
+    doc = nlp(text)
+    for ent in doc.ents:
+        if ent.label_ == "PERSON":
+            # Double check it doesn't contain cert keywords
+            if not any(kw.lower() in text.lower() for kw in ["Certification", "Certified", "Certificate", "Course", "Professional"]):
+                return True
+
+    # Initials + Name pattern (e.g., K. Sri Phani Charan)
+    if re.search(r'^[A-Z][\.\s]\s?[A-Z][a-z]+', text):
+        return True
+
+    # Pattern-based rejection: 2-4 capitalized words
+    words = text.split()
+    if 2 <= len(words) <= 4 and all(w and w[0].isupper() for w in words if w[0].isalpha()):
+        # Exclude if it contains common certification words though
+        if not any(kw.lower() in text.lower() for kw in ["Certification", "Certified", "Certificate", "Course", "Professional", "Fundamentals", "Associate", "Practitioner"]):
+            return True
+
+    return False
+
+def extract_certifications(text: str, candidate_name: str = "", project_titles: List[str] = None) -> List[str]:
     certs = []
     lines = text.split('\n')
     in_section = False
+    empty_line_count = 0
+
+    CERT_HEADERS = ["Certifications", "Certification", "Certificates", "Courses & Certifications", "Professional Certifications", "Licenses", "Awards"]
+    STOP_HEADERS = ["Education", "Skills", "Projects", "Experience", "Internships", "Achievements", "Publications", "Activities", "Leadership", "Contact", "Languages", "Interests"]
+
+    VALID_KEYWORDS = ["Certification", "Certified", "Certificate", "Course", "Training", "Professional", "Fundamentals", "Associate", "Practitioner", "Engineering"]
+    KNOWN_COURSES = ["SQL for Data Science", "Prompt Engineering", "Machine Learning", "Data Analytics", "AWS Cloud Practitioner", "Google Data Analytics"]
 
     for line in lines:
         line_clean = line.strip()
-        if not line_clean: continue
 
-        if any(kw.lower() in line_clean.lower() for kw in ["Certifications", "Licenses", "Awards"]) and len(line_clean) < 30:
-            in_section = True
+        if not line_clean:
+            if in_section:
+                empty_line_count += 1
+                if empty_line_count >= 2:
+                    break
             continue
 
-        if in_section and any(line_clean.lower() == h.lower() or line_clean.lower().startswith(h.lower()) for h in MAJOR_HEADERS if h.lower() not in ["certifications", "licenses", "awards"]):
-            break
+        empty_line_count = 0
 
+        # Detect Section Start
+        if not in_section:
+            if any(line_clean.lower() == h.lower() or (line_clean.lower().startswith(h.lower()) and len(line_clean) < 35) for h in CERT_HEADERS):
+                in_section = True
+                continue
+
+        # Detect Section End
         if in_section:
-            if any(kw in line_clean.lower() for kw in ["university", "college", "institute", "b.tech", "experience", "projects", "skills"]): continue
-            if len(line_clean) > 80: continue
-            certs.append(line_clean)
+            if any(line_clean.lower() == h.lower() or (line_clean.lower().startswith(h.lower()) and len(line_clean) < 30) for h in STOP_HEADERS):
+                break
+
+            # Stop if it's the candidate name
+            if is_person_name(line_clean, candidate_name):
+                # Only break if it's NOT a course title (Prompt Engineering might be flagged as a name if we are not careful)
+                if not any(course.lower() in line_clean.lower() for course in KNOWN_COURSES) and \
+                   not any(kw.lower() in line_clean.lower() for kw in VALID_KEYWORDS):
+                    break
+
+            # Reject contact info
+            if '@' in line_clean or 'linkedin.com' in line_clean.lower() or 'github.com' in line_clean.lower() or re.search(r'\d{10}', line_clean):
+                continue
+
+            # Reject Education entries
+            if any(kw.lower() in line_clean.lower() for kw in ["B.Tech", "B.E", "M.Tech", "M.S", "MBA", "University", "College", "Institute"]):
+                continue
+
+            # Reject Project titles
+            if project_titles and any(line_clean.lower() == p.lower() for p in project_titles):
+                continue
+
+            # Validation Rule
+            is_valid = any(kw.lower() in line_clean.lower() for kw in VALID_KEYWORDS) or \
+                       any(course.lower() in line_clean.lower() for course in KNOWN_COURSES)
+
+            if is_valid:
+                # Clean bullet points
+                cleaned_cert = re.sub(r'^[•\-\*\d\.\s]+', '', line_clean).strip()
+                if cleaned_cert and cleaned_cert not in certs:
+                    certs.append(cleaned_cert)
 
     return certs if certs else ["Not Detected"]
 
