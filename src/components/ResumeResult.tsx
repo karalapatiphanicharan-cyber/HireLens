@@ -115,13 +115,15 @@ const ResumeResult: React.FC<ResumeResultProps> = ({ data }) => {
                   <Calendar size={16} />
                   <span className="text-sm font-bold">{edu.duration}</span>
                 </div>
-                <div className="flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-1 rounded-full border border-secondary/20">
-                  <span className="text-xs font-black">CGPA: {edu.cgpa}</span>
-                </div>
+                {edu.cgpa !== 'Not Detected' && (
+                  <div className="flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-1 rounded-full border border-secondary/20">
+                    <span className="text-xs font-black">CGPA: {edu.cgpa}</span>
+                  </div>
+                )}
               </div>
             </div>
           ))}
-          {data.education.length === 0 || data.education[0].degree === 'Not Detected' && <p className="text-muted text-lg font-medium italic">Academic background not clearly detected</p>}
+          {data.education.length === 0 || (data.education.length === 1 && data.education[0].degree === 'Not Detected') && <p className="text-muted text-lg font-medium italic">Academic background not clearly detected</p>}
         </div>
       </ResultSection>
 
@@ -141,14 +143,27 @@ const ResumeResult: React.FC<ResumeResultProps> = ({ data }) => {
         <div className="grid grid-cols-1 gap-8">
           {data.projects.map((project, i) => (
             <div key={i} className="p-10 bg-white/5 rounded-[2.5rem] border border-white/5 hover:bg-white/10 transition-all">
-              <h4 className="text-2xl font-black text-white mb-4 flex items-center gap-4">
+              <h4 className="text-2xl font-black text-white mb-6 flex items-center gap-4">
                 <div className="w-2 h-8 bg-accent rounded-full" />
                 {project.title}
               </h4>
-              <p className="text-lg text-muted font-medium leading-relaxed pl-6">{project.description}</p>
+              <div className="space-y-4 pl-6">
+                {project.description.split('\n').map((line, j) => {
+                  const cleanLine = line.trim();
+                  if (!cleanLine) return null;
+                  return (
+                    <div key={j} className="flex gap-4">
+                      <span className="text-accent mt-1 shrink-0">•</span>
+                      <p className="text-lg text-muted font-medium leading-relaxed">
+                        {cleanLine.startsWith('•') || cleanLine.startsWith('-') || cleanLine.startsWith('*') ? cleanLine.substring(1).trim() : cleanLine}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           ))}
-          {data.projects.length === 0 || data.projects[0].title === 'Not Detected' && <p className="text-muted text-lg font-medium italic">No specific projects identified</p>}
+          {data.projects.length === 0 || (data.projects.length === 1 && data.projects[0].title === 'Not Detected') && <p className="text-muted text-lg font-medium italic">No specific projects identified</p>}
         </div>
       </ResultSection>
 
