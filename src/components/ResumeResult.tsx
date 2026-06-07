@@ -15,7 +15,11 @@ import RecruiterInsights from './RecruiterInsights';
 import InterviewReadinessCard from './InterviewReadinessCard';
 import QuestionAccordion from './QuestionAccordion';
 import MockInterview from './MockInterview';
-import { Cpu, HelpCircle, Users, Briefcase as BriefcaseIcon, Zap, Target, Lightbulb } from 'lucide-react';
+import RecruiterSummary from './RecruiterSummary';
+import ReportGenerator from './ReportGenerator';
+import { generatePDFReport, saveLastReport } from '../services/report';
+import { AnimatePresence } from 'framer-motion';
+import { Cpu, HelpCircle, Users, Briefcase as BriefcaseIcon, Zap, Target, Lightbulb, Download, FileBarChart } from 'lucide-react';
 
 // Using a generic icon for GitHub since "Github" export might be missing or named differently
 const GitHubIcon = ({ size }: { size: number }) => (
@@ -41,6 +45,27 @@ interface ResumeResultProps {
 }
 
 const ResumeResult: React.FC<ResumeResultProps> = ({ data, analysis }) => {
+  const [showReportGenerator, setShowReportGenerator] = React.useState(false);
+  const [isGenerating, setIsGenerating] = React.useState(false);
+
+  React.useEffect(() => {
+    if (analysis) {
+      saveLastReport(data, analysis);
+    }
+  }, [data, analysis]);
+
+  const handleQuickDownload = async () => {
+    if (!analysis) return;
+    setIsGenerating(true);
+    try {
+      await generatePDFReport(data, analysis);
+    } catch (error) {
+      console.error('Failed to generate report:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -63,12 +88,48 @@ const ResumeResult: React.FC<ResumeResultProps> = ({ data, analysis }) => {
       animate="visible"
       className="max-w-7xl mx-auto"
     >
-      <div className="text-center mb-16">
-        <h1 className="text-5xl lg:text-7xl font-black mb-6 tracking-tighter">
-          Analysis <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent">Complete</span>
-        </h1>
-        <p className="text-muted text-xl font-medium">We've extracted deep professional intelligence from your profile.</p>
+      <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-16">
+        <div className="text-center md:text-left">
+          <h1 className="text-5xl lg:text-7xl font-black mb-6 tracking-tighter">
+            Analysis <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent">Complete</span>
+          </h1>
+          <p className="text-muted text-xl font-medium">We've extracted deep professional intelligence from your profile.</p>
+        </div>
+
+        {analysis && (
+          <div className="flex items-center gap-4">
+             <button
+              onClick={() => setShowReportGenerator(true)}
+              className="bg-white/5 border border-white/10 text-white px-8 py-4 rounded-2xl font-black text-lg hover:bg-white/10 transition-all flex items-center gap-3 backdrop-blur-xl group cursor-pointer"
+            >
+              <FileBarChart size={24} className="group-hover:scale-110 transition-transform" />
+              Preview Report
+            </button>
+            <button
+              onClick={handleQuickDownload}
+              disabled={isGenerating}
+              className="bg-accent text-white px-8 py-4 rounded-2xl font-black text-lg flex items-center gap-3 hover:bg-accent/90 transition-all shadow-xl shadow-accent/20 hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
+            >
+              {isGenerating ? (
+                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Download size={24} />
+              )}
+              {isGenerating ? 'Generating...' : 'Download Report'}
+            </button>
+          </div>
+        )}
       </div>
+
+      <AnimatePresence>
+        {showReportGenerator && analysis && (
+          <ReportGenerator
+            data={data}
+            analysis={analysis}
+            onClose={() => setShowReportGenerator(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Analysis Section (Phase 3) */}
       {analysis && (
@@ -101,6 +162,10 @@ const ResumeResult: React.FC<ResumeResultProps> = ({ data, analysis }) => {
 
           {analysis.roadmap && (
             <LearningRoadmap roadmap={analysis.roadmap} />
+          )}
+
+          {analysis.recruiter_report && (
+            <RecruiterSummary report={analysis.recruiter_report} />
           )}
 
           {analysis.insights && (

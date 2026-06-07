@@ -73,6 +73,13 @@ class InterviewPrep(BaseModel):
     job_specific_questions: List[InterviewQuestion]
     improvement_areas: InterviewImprovement
 
+class RecruiterReport(BaseModel):
+    assessment: str
+    strengths: List[str]
+    concerns: List[str]
+    recommended_roles: List[str]
+    hiring_readiness: str
+
 class AnalysisResponse(BaseModel):
     ats_score: int
     job_match_score: int
@@ -88,3 +95,5 @@ class AnalysisResponse(BaseModel):
     smart_recs: Optional[List[str]] = None
     # Phase 5
     interview_prep: Optional[InterviewPrep] = None
+    # Phase 7
+    recruiter_report: Optional[RecruiterReport] = None
