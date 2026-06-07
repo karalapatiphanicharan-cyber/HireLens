@@ -8,8 +8,8 @@ try:
     from .summarizer import generate_summary
     from .intelligence import calculate_strength, get_career_recommendations, generate_roadmap, get_recruiter_insights, get_smart_recommendations
     from .interviewer import (
-        calculate_readiness, get_technical_questions, get_project_questions,
-        get_hr_behavioral_questions, get_job_specific_questions, get_weak_areas, get_interview_roadmap
+        calculate_readiness, get_technical_questions, get_behavioral_questions,
+        get_hr_questions, get_situational_problem_solving, get_job_specific_questions, get_improvement_areas
     )
 except ImportError:
     from parser import parse_resume
@@ -19,8 +19,8 @@ except ImportError:
     from summarizer import generate_summary
     from intelligence import calculate_strength, get_career_recommendations, generate_roadmap, get_recruiter_insights, get_smart_recommendations
     from interviewer import (
-        calculate_readiness, get_technical_questions, get_project_questions,
-        get_hr_behavioral_questions, get_job_specific_questions, get_weak_areas, get_interview_roadmap
+        calculate_readiness, get_technical_questions, get_behavioral_questions,
+        get_hr_questions, get_situational_problem_solving, get_job_specific_questions, get_improvement_areas
     )
 
 app = FastAPI(title="HireLens API")
@@ -80,17 +80,17 @@ async def analyze_resume(request: AnalysisRequest):
         # Merge suggestions
         all_suggestions = ats_result["suggestions"] + match_result["suggestions"]
 
-        hr_behavioral = get_hr_behavioral_questions(resume_dict)
+        situational_ps = get_situational_problem_solving()
 
         interview_prep = {
             "readiness": calculate_readiness(resume_dict, ats_result["ats_score"], match_result["job_match_score"]),
             "technical_questions": get_technical_questions(request.resume_data.skills),
-            "project_questions": get_project_questions(resume_dict.get("projects", [])),
-            "hr_questions": hr_behavioral["hr"],
-            "behavioral_questions": hr_behavioral["behavioral"],
+            "hr_questions": get_hr_questions(),
+            "behavioral_questions": get_behavioral_questions(),
+            "situational_questions": situational_ps["situational"],
+            "problem_solving_questions": situational_ps["problem_solving"],
             "job_specific_questions": get_job_specific_questions(request.job_description, match_result["missing_skills"]),
-            "weak_areas": get_weak_areas(all_suggestions, match_result["missing_skills"]),
-            "success_roadmap": get_interview_roadmap(match_result["missing_skills"])
+            "improvement_areas": get_improvement_areas(all_suggestions, match_result["missing_skills"])
         }
 
         return AnalysisResponse(

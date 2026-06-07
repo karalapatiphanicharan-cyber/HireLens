@@ -47,13 +47,27 @@ const QuestionAccordion: React.FC<Props> = ({ title, questions, icon, accentColo
                       <BookOpen size={14} className="text-muted" />
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted">Expected Topics</span>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mb-6">
                       {q.topics.map((topic, i) => (
-                        <span key={i} className="px-3 py-1 bg-white/5 rounded-lg text-xs font-bold text-muted border border-white/10">
+                        <span key={i} className="px-3 py-1 bg-primary/10 rounded-lg text-xs font-bold text-primary border border-primary/20">
                           {topic}
                         </span>
                       ))}
                     </div>
+
+                    {q.follow_ups && q.follow_ups.length > 0 && (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-1 h-3 bg-secondary rounded-full" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-muted">Follow-up Questions</span>
+                        </div>
+                        {q.follow_ups.map((f, i) => (
+                          <p key={i} className="text-muted text-sm font-medium pl-3 border-l border-white/10">
+                            {f}
+                          </p>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}
