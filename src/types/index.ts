@@ -25,3 +25,22 @@ export interface Stat {
   change?: string;
   isPositive?: boolean;
 }
+
+export interface ParsedData {
+  name: string;
+  email: string;
+  phone: string;
+  skills: string[];
+  education: string[];
+  experience: string[];
+  projects: string[];
+  certifications: string[];
+  linkedin: string;
+  github: string;
+  portfolio: string;
+}
+
+export interface UploadResponse {
+  success: boolean;
+  data: ParsedData;
+}
