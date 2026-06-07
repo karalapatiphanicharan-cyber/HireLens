@@ -32,9 +32,32 @@ class AnalysisRequest(BaseModel):
     resume_data: ParsedData
     job_description: str
 
+class StrengthAnalysis(BaseModel):
+    score: int
+    level: str
+
+class Roadmap(BaseModel):
+    current: List[str]
+    next: List[str]
+    future: List[str]
+
+class RecruiterInsights(BaseModel):
+    strengths: List[str]
+    weaknesses: List[str]
+
+class CareerRole(BaseModel):
+    title: str
+
 class AnalysisResponse(BaseModel):
     ats_score: int
     job_match_score: int
     matching_skills: List[str]
     missing_skills: List[str]
     suggestions: List[str]
+    # Phase 4
+    summary: Optional[str] = None
+    strength: Optional[StrengthAnalysis] = None
+    recommendations: Optional[List[CareerRole]] = None
+    roadmap: Optional[Roadmap] = None
+    insights: Optional[RecruiterInsights] = None
+    smart_recs: Optional[List[str]] = None

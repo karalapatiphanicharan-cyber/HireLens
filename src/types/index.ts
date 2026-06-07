@@ -40,6 +40,22 @@ export interface AnalysisResponse {
   matching_skills: string[];
   missing_skills: string[];
   suggestions: string[];
+  summary?: string;
+  strength?: {
+    score: number;
+    level: string;
+  };
+  recommendations?: { title: string }[];
+  roadmap?: {
+    current: string[];
+    next: string[];
+    future: string[];
+  };
+  insights?: {
+    strengths: string[];
+    weaknesses: string[];
+  };
+  smart_recs?: string[];
 }
 
 export interface Feature {
